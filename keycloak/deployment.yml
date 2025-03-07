@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: ipmac-app
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:21.1.1
+        args: ["start-dev"]
+        env:
+        - name: KC_PROXY
+          value: "passthrough"
+        - name: KC_HOSTNAME
+          value: "keycloak.ipmac.dat"
+        - name: KC_HOSTNAME_STRICT
+          value: "false"
+        - name: KEYCLOAK_ADMIN
+          value: "admin"
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-credentials
+              key: admin-password
+        - name: KC_DB
+          value: "postgres"          # Changed from "ipmac-db"
+        - name: KC_DB_URL
+          value: "jdbc:postgresql://postgres:5432/postgres"
+        - name: KC_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: username
+        - name: KC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /realms/master
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /realms/master
+            port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
