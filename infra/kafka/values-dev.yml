@@ -1,0 +1,16 @@
+kafka:
+  replicas: 1
+  version: 3.6.1
+  storage:
+    size: 5Gi
+    deleteClaim: true
+  config:
+    offsetsTopicReplicationFactor: 1
+    transactionStateLogReplicationFactor: 1
+    transactionStateLogMinIsr: 1
+
+zookeeper:
+  replicas: 1
+  storage:
+    size: 5Gi
+    deleteClaim: true

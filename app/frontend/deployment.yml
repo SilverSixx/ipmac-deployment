@@ -23,11 +23,11 @@ spec:
             - name: VITE_API_URL
               value: "http://common-service:8080/api"
             - name: VITE_KEYCLOAK_URL
-              value: "http://app.ipmac.dat/auth"
+              value: "https://test.keycloak.org/"
             - name: VITE_KEYCLOAK_REALM
               value: "ipmac"
             - name: VITE_KEYCLOAK_CLIENT_ID
-              value: "frontend"
+              value: "ipmac-client"
           ports:
             - containerPort: 80
 ---
@@ -55,7 +55,7 @@ metadata:
 spec:
   ingressClassName: nginx  # Updated from the deprecated annotation
   rules:
-    - host: app.ipmac.dat  # Replace with your domain
+    - host: test.ipmac.org  
       http:
         paths:
           - path: /
@@ -65,24 +65,7 @@ spec:
                 name: frontend
                 port:
                   number: 80
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: common-service
-                port:
-                  number: 8080
-          - path: /auth
-            pathType: Prefix
-            backend:
-              service:
-                name: keycloak
-                port:
-                  number: 8080
-          - path: /kafka-ui
-            pathType: Prefix
-            backend:
-              service:
-                name: kafka-ui
-                port:
-                  number: 8080
+  tls:
+    - hosts:
+        - test.ipmac.org
+      secretName: ipmac-tls-secret

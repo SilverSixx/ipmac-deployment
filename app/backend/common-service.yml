@@ -20,7 +20,7 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: "dev"
         - name: KEYCLOAK_AUTH_SERVER_URL
-          value: "http://keycloak:8080/auth"
+          value: "https://test.keycloak.org/"
         - name: KAFKA_BOOTSTRAP_SERVERS
           value: "kafka:9092"
         ports:

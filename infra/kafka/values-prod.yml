@@ -1,0 +1,30 @@
+kafka:
+  replicas: 3
+  version: 3.6.1
+  storage:
+    size: 50Gi
+    deleteClaim: false
+  config:
+    offsetsTopicReplicationFactor: 3
+    transactionStateLogReplicationFactor: 3
+    transactionStateLogMinIsr: 2
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "2"
+    limits:
+      memory: "8Gi"
+      cpu: "4"
+
+zookeeper:
+  replicas: 3
+  storage:
+    size: 20Gi
+    deleteClaim: false
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "1"
+    limits:
+      memory: "4Gi"
+      cpu: "2"

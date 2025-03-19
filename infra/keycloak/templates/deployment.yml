@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "keycloak.fullname" . }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "keycloak.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "keycloak.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: keycloak
+        command: ["/opt/keycloak/bin/kc.sh", "start-dev"]
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 8443
+          protocol: TCP
+        env:
+          - name: KEYCLOAK_USER
+            value: {{ .Values.adminUser | quote }}
+          - name: KEYCLOAK_PASSWORD
+            value: {{ .Values.adminPassword | quote }}
+          - name: DB_VENDOR
+            value: "POSTGRES"
+          - name: DB_ADDR
+            value: "{{ include "keycloak.fullname" . }}-db" # Service name of PostgreSQL
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_DATABASE
+            value: {{ .Values.database.name | quote }}
+          - name: DB_USER
+            value: {{ .Values.database.user | quote }}
+          - name: DB_PASSWORD
+            value: {{ .Values.database.password | quote }}
+        livenessProbe:
+          httpGet:
+            path: /auth
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /auth
+            port: http
+        resources:
+          {{- toYaml .Values.resources | nindent 8 }}

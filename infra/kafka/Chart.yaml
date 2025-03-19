@@ -1,0 +1,5 @@
+apiVersion: v2
+name: kafka
+description: A Helm chart to deploy a Kafka cluster using the Strimzi operator.
+type: application
+version: 0.1.0

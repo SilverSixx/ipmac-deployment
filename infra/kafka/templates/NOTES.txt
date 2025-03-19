@@ -1,0 +1,13 @@
+Your Kafka cluster is being deployed using the Strimzi operator.
+
+**Prerequisites:**
+- Ensure the Strimzi Kafka operator is already installed in your Kubernetes cluster.
+
+**To verify the deployment:**
+Run the following command to check the status of your Kafka cluster:
+
+kubectl get kafka -n {{ .Release.Namespace }} {{ .Release.Name }}-kafka
+
+You can also check the pods created by the Strimzi operator:
+
+kubectl get pods -l strimzi.io/cluster={{ .Release.Name }}-kafka -n {{ .Release.Namespace }}

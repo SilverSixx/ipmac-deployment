@@ -57,7 +57,7 @@ spec:
   ports:
   - port: 5432
     targetPort: 5432
-  type: ClusterIP
+  type: LoadBalancer
 
 ---
 # Secrets (these would be created properly in production)
@@ -70,13 +70,3 @@ type: Opaque
 data:
   username: cG9zdGdyZXN1c2Vy # base64 encoded 'postgresuser'
   password: cG9zdGdyZXNwYXNzd29yZA== # base64 encoded 'postgrespassword'
-
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: keycloak-credentials
-  namespace: ipmac-app
-type: Opaque
-data:
-  admin-password: YWRtaW5wYXNzd29yZA== # base64 encoded 'adminpassword'
